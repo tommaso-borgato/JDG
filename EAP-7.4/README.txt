@@ -1,4 +1,7 @@
-# disable JDG security
+# Intro
+
+EAP version must be at least 7.4.0.CD21: with 7.4.0.CD20 you still have to use jboss-datagrid-7.3.8-server since `remote-cache-container` doesn't have the necessary `properties` needed to configure security;
+In case you want to use EAP version prior to 7.4.0.CD21, you have to disable JDG security (note there is no cli):
 sed -i "s/_NODE_IDENTIFIER_/WFL2/g" $WLF_CLI_SCRIPT_TMP_2
 
 # create JDG user
