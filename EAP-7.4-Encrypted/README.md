@@ -1,30 +1,41 @@
 # Intro
 
 Connect EAP and RHDG using an encrypted connection;
-The key-pair used for encryption is in the jdg.keystore.jks key-store;
+The key-pair used for encryption is in the `jdg.keystore.jks` key-store file;
 
 EAP version must be at least 7.4.0.CD21: with 7.4.0.CD20 you still have to use jboss-datagrid-7.3.8-server since `remote-cache-container` doesn't have the necessary `properties` needed to configure security;
 In case you want to use EAP version prior to 7.4.0.CD21, you have to disable JDG security (note there is no cli)
 
 # Create the keystore and truststore:
+
 Create keystore and truststore:
+
 ```
 keytool -genkeypair -alias jdg-client -keyalg RSA -keysize 2048 -validity 365 -keystore /tmp/prova/jdg.keystore.jks -dname "CN=jdg.client" -keypass 123PIPPOBAUDO -storepass 123PIPPOBAUDO
 keytool -exportcert -keystore /tmp/prova/jdg.keystore.jks -alias jdg-client -keypass 123PIPPOBAUDO -storepass 123PIPPOBAUDO -file /tmp/prova/jdg.cer
 keytool -importcert -keystore /tmp/prova/jdg.truststore.jks -storepass 123PIPPOBAUDO -alias jdg-client -trustcacerts -file /tmp/prova/jdg.cer -noprompt
 ```
-copy keystore and truststore in EAP and JDG folders:
+
+copy keystore and truststore in EAP and RHDG folders:
+
 ```
 cp /tmp/prova/jdg.keystore.jks ./redhat-datagrid-8.1.1-server/server/conf
 cp /tmp/prova/jdg.keystore.jks ./jboss-eap-7.4
 cp /tmp/prova/jdg.truststore.jks ./jboss-eap-7.4
 ```
 
-# create JDG user
-./redhat-datagrid-8.1.1-server/bin/cli.sh user create admin -p pass.1234
+# create RHDG user
 
-# configure JDG
-Modify  to include the following:
+This user is needed because the access to RHDG is password protected by default (`./redhat-datagrid-8.1.1-server/server/conf/infinispan.xml`: `<endpoints socket-binding="default" security-realm="default">`):
+
+```
+./redhat-datagrid-8.1.1-server/bin/cli.sh user create admin -p pass.1234
+```
+
+# configure RHDG
+
+Manually modify `./redhat-datagrid-8.1.1-server/server/conf/infinispan.xml` to include the following:
+
 ```
     <server-identities>
         <ssl>
@@ -35,10 +46,15 @@ Modify  to include the following:
     </server-identities>
 ```
 
-# start JDG
-./redhat-datagrid-8.1.1-server/bin/server.sh -c infinispan.xml --cluster-stack=tcp --node-name=jdg1 
+# start RHDG
 
-# configure WF: 
+```
+./redhat-datagrid-8.1.1-server/bin/server.sh -c infinispan.xml --cluster-stack=tcp --node-name=jdg1 
+```
+
+# configure EAP: 
+
+```
 cat <<EOT > wf.cli
 embed-server --server-config=standalone-ha.xml
 /subsystem=jgroups/channel=ee:write-attribute(name=stack,value=tcp)
@@ -68,12 +84,22 @@ run-batch
 EOT
 
 ./jboss-eap-7.4/bin/jboss-cli.sh --file=wf.cli
+```
 
-# start WF
+# start EAP
+
+```
 ./jboss-eap-7.4/bin/standalone.sh --server-config=standalone-ha.xml -Djboss.default.jgroups.stack=tcp -Dprogram.name=wfl1 -Djboss.node.name=wfl1
+```
 
-# deploy to WF
+# deploy to EAP
+
+```
 cp ../clusterbench-ee8.ear ./jboss-eap-7.4/standalone/deployments/
+```
 
 # TEST
+
+```
 curl http://localhost:8080/clusterbench/session
+```
