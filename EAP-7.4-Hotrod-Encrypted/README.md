@@ -86,6 +86,8 @@ EOT
 ./jboss-eap-7.4/bin/jboss-cli.sh --file=wf.cli
 ```
 
+> NOTE: The configurations that use an invalidation-cache do not require that the associated remote-cache-container specify `module=org.wildfly.clustering.web.hotrod`. That is only needed when using hotrod-session-management or hotrod-single-sign-on-management;
+
 # start EAP
 
 ```
