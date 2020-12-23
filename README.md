@@ -5,7 +5,7 @@ In this repository you can find some examples about running "JBoss EAP" connecte
 * [EAP-7.3](EAP-7.3): EAP-7.3 + jboss-datagrid-7.3.8-server
 * [EAP-7.4](EAP-7.4): EAP-7.4 + redhat-datagrid-8.1.1-server
 * [EAP-7.4-Hotrod](EAP-7.4-Hotrod): EAP-7.4 + redhat-datagrid-8.1.1-server using Hotrod
-* [EAP-7.4-Encrypted](EAP-7.4-Encrypted): EAP-7.4 + redhat-datagrid-8.1.1-server using EAP to RHDG encrypted connection
+* [EAP-7.4-Encrypted](EAP-7.4-Encrypted): EAP-7.4 + redhat-datagrid-8.1.1-server using Hotrod and encrypted connection
 * [WF](WF): WF + redhat-datagrid-8.1.1-server
 
 All the examples assume you have downloaded and unzipped the necessary EAP and RHDG distributions using something like the following:
