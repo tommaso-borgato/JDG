@@ -4,6 +4,7 @@ In this repository you can find some examples about running "JBoss EAP" connecte
 
 * EAP-7.3 + jboss-datagrid-7.3.8-server
 * EAP-7.4 + redhat-datagrid-8.1.1-server
+* EAP-7.4-Hotrod: EAP-7.4 + redhat-datagrid-8.1.1-server
 * EAP-7.4-Encrypted: EAP-7.4 + redhat-datagrid-8.1.1-server
 * WF + redhat-datagrid-8.1.1-server
 
@@ -13,22 +14,16 @@ RHDG:
 
 ```
 wget http://<RHDG_REPO>/redhat-datagrid-8.1.1.CR1-server.zip
-rm -rdf /tmp/tests-clustering/jdg-1/* /tmp/tests-clustering/jdg-1/.[!.]*
-mkdir -p /tmp/tests-clustering/jdg-1
-unzip -q redhat-datagrid-8.1.1.CR1-server.zip -d "/tmp/tests-clustering/jdg-1/"
-mv /tmp/tests-clustering/jdg-1/redhat-datagrid-8.1.1-server/* /tmp/tests-clustering/jdg-1/
-mv /tmp/tests-clustering/jdg-1/redhat-datagrid-8.1.1-server/.[!.]* /tmp/tests-clustering/jdg-1/
-rm -d /tmp/tests-clustering/jdg-1/redhat-datagrid-8.1.1-server
+rm -rdf /tmp/tests-clustering/redhat-datagrid-8.1.1-server/* /tmp/tests-clustering/redhat-datagrid-8.1.1-server/.[!.]*
+mkdir -p /tmp/tests-clustering/redhat-datagrid-8.1.1-server
+unzip -q redhat-datagrid-8.1.1.CR1-server.zip -d "/tmp/tests-clustering/"
 ```
 
 EAP/WF:
 
 ```
 wget http://<EAP_REPO>/jboss-eap-7.4.0.CD21-CR1.zip
-rm -rdf /tmp/tests-clustering/jboss-eap-1/* /tmp/tests-clustering/jboss-eap-1/.[!.]*
-mkdir -p /tmp/tests-clustering/jboss-eap-1
-unzip -q jboss-eap-7.4.0.CD21-CR1.zip -d "/tmp/tests-clustering/jboss-eap-1/"
-mv /tmp/tests-clustering/jboss-eap-1/jboss-eap-7.4/* /tmp/tests-clustering/jboss-eap-1/
-mv /tmp/tests-clustering/jboss-eap-1/jboss-eap-7.4/.[!.]* /tmp/tests-clustering/jboss-eap-1/
-rm -d /tmp/tests-clustering/jboss-eap-1/jboss-eap-7.4
+rm -rdf /tmp/tests-clustering/jboss-eap-7.4/* /tmp/tests-clustering/jboss-eap-7.4/.[!.]*
+mkdir -p /tmp/tests-clustering/jboss-eap-7.4
+unzip -q jboss-eap-7.4.0.CD21-CR1.zip -d "/tmp/tests-clustering/"
 ```

@@ -4,7 +4,7 @@ Connect EAP and RHDG using an encrypted connection;
 The key-pair used for encryption is in the `jdg.keystore.jks` key-store file;
 
 EAP version must be at least 7.4.0.CD21: with 7.4.0.CD20 you still have to use jboss-datagrid-7.3.8-server since `remote-cache-container` doesn't have the necessary `properties` needed to configure security;
-In case you want to use EAP version prior to 7.4.0.CD21, you have to disable JDG security (note there is no cli)
+In case you want to use EAP version prior to 7.4.0.CD21, you have to disable JDG security (note there is no cli): in `./redhat-datagrid-8.1.1-server/server/conf/infinispan.xml` remove `security-realm="default"` from `<endpoints socket-binding="default" security-realm="default">`;
 
 # Create the keystore and truststore:
 

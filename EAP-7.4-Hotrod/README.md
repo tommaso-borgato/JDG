@@ -1,6 +1,6 @@
 # Intro
 
-Connect EAP and RHDG using an un-encrypted connection; 
+Connect EAP and RHDG using an un-encrypted connection using Hotrod;
 
 EAP version must be at least 7.4.0.CD21: with 7.4.0.CD20 you still have to use jboss-datagrid-7.3.8-server since `remote-cache-container` doesn't have the necessary `properties` needed to configure security;
 In case you want to use EAP version prior to 7.4.0.CD21, you have to disable JDG security (note there is no cli): in `./redhat-datagrid-8.1.1-server/server/conf/infinispan.xml` remove `security-realm="default"` from `<endpoints socket-binding="default" security-realm="default">`;
@@ -29,12 +29,13 @@ embed-server --std-out=echo --server-config=standalone-ha.xml
 /subsystem=jgroups/channel=ee:write-attribute(name=stack,value=tcp)
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=infinispan-server:add(port=11222,host=$(hostname -I | cut -d' ' -f1))
 batch
-/subsystem=infinispan/remote-cache-container=jdg_rc:add(default-remote-cluster=infinispan-server-cluster, properties={infinispan.client.hotrod.auth_username=jbosseap, infinispan.client.hotrod.auth_password=jbosseap}, protocol-version=3.0, statistics-enabled=true)
+/subsystem=infinispan/remote-cache-container=jdg_rc:add(default-remote-cluster=infinispan-server-cluster, module=org.wildfly.clustering.web.hotrod, protocol-version=3.0, statistics-enabled=true, properties={infinispan.client.hotrod.auth_username=jbosseap, infinispan.client.hotrod.auth_password=jbosseap})
 /subsystem=infinispan/remote-cache-container=jdg_rc/remote-cluster=infinispan-server-cluster:add(socket-bindings=[infinispan-server])
 run-batch
-/subsystem=infinispan/cache-container=web/invalidation-cache=jdg_ic:add()
-/subsystem=infinispan/cache-container=web/invalidation-cache=jdg_ic/store=hotrod:add(remote-cache-container=jdg_rc,fetch-state=false,preload=false,passivation=false,purge=false,shared=true)
-/subsystem=infinispan/cache-container=web:write-attribute(name=default-cache, value=jdg_ic)
+/subsystem=infinispan/remote-cache-container=jdg_rc/near-cache=invalidation:add(max-entries=1000)
+/subsystem=distributable-web/hotrod-session-management=sm_offload:add(remote-cache-container=jdg_rc, granularity=SESSION)
+/subsystem=distributable-web/hotrod-session-management=sm_offload/affinity=local:add()
+/subsystem=distributable-web:write-attribute(name=default-session-management,value=sm_offload)
 EOT
 
 ./jboss-eap-7.4/bin/jboss-cli.sh --file=wf.cli

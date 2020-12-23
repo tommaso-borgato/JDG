@@ -1,0 +1,11 @@
+embed-server --std-out=echo --server-config=standalone-ha.xml
+/subsystem=jgroups/channel=ee:write-attribute(name=stack,value=tcp)
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=infinispan-server:add(port=11222,host=192.168.1.16)
+batch
+/subsystem=infinispan/remote-cache-container=jdg_rc:add(default-remote-cluster=infinispan-server-cluster, module=org.wildfly.clustering.web.hotrod, protocol-version=3.0, statistics-enabled=true, properties={infinispan.client.hotrod.auth_username=jbosseap, infinispan.client.hotrod.auth_password=jbosseap})
+/subsystem=infinispan/remote-cache-container=jdg_rc/remote-cluster=infinispan-server-cluster:add(socket-bindings=[infinispan-server])
+run-batch
+/subsystem=infinispan/remote-cache-container=jdg_rc/near-cache=invalidation:add(max-entries=1000)
+/subsystem=distributable-web/hotrod-session-management=sm_offload:add(remote-cache-container=jdg_rc, granularity=SESSION)
+/subsystem=distributable-web/hotrod-session-management=sm_offload/affinity=local:add()
+/subsystem=distributable-web:write-attribute(name=default-session-management,value=sm_offload)
